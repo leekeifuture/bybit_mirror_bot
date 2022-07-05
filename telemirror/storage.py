@@ -46,7 +46,8 @@ class MirrorMessage:
         _mirror_id = adapt(self.mirror_id).getquoted().decode('utf-8')
         _mirror_channel = adapt(
             self.mirror_channel).getquoted().decode('utf-8')
-        return AsIs(f'{_original_id}, {_original_channel}, {_mirror_id}, {_mirror_channel}')
+        return AsIs(
+            f'{_original_id}, {_original_channel}, {_mirror_id}, {_mirror_channel}')
 
 
 class Database(Protocol):
@@ -68,7 +69,8 @@ class Database(Protocol):
         raise NotImplementedError
 
     @abstractmethod
-    def get_messages_to_edit(self: 'Database', original_id: int, original_channel: int) -> List[MirrorMessage]:
+    def get_messages_to_edit(self: 'Database', original_id: int,
+                             original_channel: int) -> List[MirrorMessage]:
         """
         Finds `MirrorMessage` objects with `original_id` and `original_channel` values
 
@@ -134,7 +136,8 @@ class InMemoryDatabase(Database):
         self.__stored.setdefault(self.__build_message_hash(
             entity.original_id, entity.original_channel), []).append(entity)
 
-    def get_messages_to_edit(self: 'InMemoryDatabase', original_id: int, original_channel: int) -> List[MirrorMessage]:
+    def get_messages_to_edit(self: 'InMemoryDatabase', original_id: int,
+                             original_channel: int) -> List[MirrorMessage]:
         """
         Finds `MirrorMessage` objects with `original_id` and `original_channel` values
 
@@ -145,9 +148,11 @@ class InMemoryDatabase(Database):
         Returns:
             List[MirrorMessage]
         """
-        return self.__stored.get(self.__build_message_hash(original_id, original_channel), None)
+        return self.__stored.get(
+            self.__build_message_hash(original_id, original_channel), None)
 
-    def __build_message_hash(self: 'InMemoryDatabase', original_id: int, original_channel: int) -> str:
+    def __build_message_hash(self: 'InMemoryDatabase', original_id: int,
+                             original_channel: int) -> str:
         """
         Builds message hash from `original_id` and `original_channel` values
 
@@ -188,7 +193,9 @@ class PostgresDatabase(Database):
     MIN_CONN = 2
     MAX_CONN = 10
 
-    def __init__(self, connection_string: str, min_conn: int = MIN_CONN, max_conn: int = MAX_CONN, logger: logging.Logger = logging.getLogger(__name__)):
+    def __init__(self, connection_string: str, min_conn: int = MIN_CONN,
+                 max_conn: int = MAX_CONN,
+                 logger: logging.Logger = logging.getLogger(__name__)):
         self.__logger = logger
         self.connection_pool = pool.SimpleConnectionPool(
             min_conn, max_conn, connection_string)
@@ -212,7 +219,8 @@ class PostgresDatabase(Database):
             else:
                 connection.commit()
 
-    def get_messages_to_edit(self: 'PostgresDatabase', original_id: int, original_channel: int) -> List[MirrorMessage]:
+    def get_messages_to_edit(self: 'PostgresDatabase', original_id: int,
+                             original_channel: int) -> List[MirrorMessage]:
         """
         Finds `MirrorMessage` objects with `original_id` and `original_channel` values
 

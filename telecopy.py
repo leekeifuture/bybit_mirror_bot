@@ -2,6 +2,7 @@
 Make full copy of telegram channel
 """
 import time
+
 from telethon.sessions import StringSession
 from telethon.sync import TelegramClient
 from telethon.tl.types import MessageService
@@ -19,7 +20,8 @@ LIMIT_TO_WAIT = 50
 
 
 def do_full_copy():
-    with TelegramClient(StringSession(SESSION_STRING), API_ID, API_HASH) as client:
+    with TelegramClient(StringSession(SESSION_STRING), API_ID,
+                        API_HASH) as client:
         amount_sended = 0
         for message in client.iter_messages(SOURCE_CHAT):
             # skip if service messages

@@ -7,7 +7,7 @@ from config import REMOVE_URLS_WHITELIST as URLS_WHITELIST
 from config import SESSION_STRING, SOURCE_CHATS, USE_MEMORY_DB
 from telemirror.messagefilters import EmptyMessageFilter, UrlMessageFilter
 from telemirror.mirroring import MirrorTelegramClient
-from telemirror.storage import Database, InMemoryDatabase, PostgresDatabase
+from telemirror.storage import InMemoryDatabase, PostgresDatabase
 
 
 def main():

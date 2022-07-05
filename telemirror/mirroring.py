@@ -1,6 +1,7 @@
 import logging
 from typing import Dict, List, Union
 
+import discord
 from telethon import events
 from telethon.sessions import StringSession
 from telethon.sync import TelegramClient
@@ -9,7 +10,6 @@ from telethon.tl import types
 from config import DISCORD_GUILD_ID, DISCORD_BOT_TOKEN, DISCORD_CHANNEL_ID
 from .messagefilters import EmptyMessageFilter, MesssageFilter
 from .storage import Database, MirrorMessage
-import discord
 
 
 async def send_to_discord_chat(text):
@@ -63,16 +63,19 @@ class EventHandlers:
                 if isinstance(incoming_message.media, types.MessageMediaPoll):
                     await send_to_discord_chat(event.message.message)
                     outgoing_message = await self.send_message(outgoing_chat,
-                                                               file=types.InputMediaPoll(poll=incoming_message.media.poll))
+                                                               file=types.InputMediaPoll(
+                                                                   poll=incoming_message.media.poll))
                 else:
                     await send_to_discord_chat(event.message.message)
-                    outgoing_message = await self.send_message(outgoing_chat, event.message)
+                    outgoing_message = await self.send_message(outgoing_chat,
+                                                               event.message)
 
                 if outgoing_message is not None:
-                    self._database.insert(MirrorMessage(original_id=incoming_message.id,
-                                                        original_channel=incoming_chat,
-                                                        mirror_id=outgoing_message.id,
-                                                        mirror_channel=outgoing_chat))
+                    self._database.insert(
+                        MirrorMessage(original_id=incoming_message.id,
+                                      original_channel=incoming_chat,
+                                      mirror_id=outgoing_message.id,
+                                      mirror_channel=outgoing_chat))
         except Exception as e:
             self._logger.error(e, exc_info=True)
 
@@ -107,10 +110,11 @@ class EventHandlers:
 
                 if outgoing_messages is not None and len(outgoing_messages) > 1:
                     for i, outgoing_message in enumerate(outgoing_messages):
-                        self._database.insert(MirrorMessage(original_id=source_message_ids[i],
-                                                            original_channel=incoming_chat,
-                                                            mirror_id=outgoing_message.id,
-                                                            mirror_channel=outgoing_chat))
+                        self._database.insert(
+                            MirrorMessage(original_id=source_message_ids[i],
+                                          original_channel=incoming_chat,
+                                          mirror_id=outgoing_message.id,
+                                          mirror_channel=outgoing_chat))
         except Exception as e:
             self._logger.error(e, exc_info=True)
 
@@ -137,7 +141,9 @@ class EventHandlers:
 
             incoming_message = self._message_filter.process(incoming_message)
             for outgoing_message in outgoing_messages:
-                await self.edit_message(outgoing_message.mirror_channel, outgoing_message.mirror_id, incoming_message.message)
+                await self.edit_message(outgoing_message.mirror_channel,
+                                        outgoing_message.mirror_id,
+                                        incoming_message.message)
         except Exception as e:
             self._logger.error(e, exc_info=True)
 
@@ -145,12 +151,12 @@ class EventHandlers:
 class Mirroring(EventHandlers):
 
     def configure_mirroring(
-        self: 'MirrorTelegramClient',
-        source_chats: List[int],
-        mirror_mapping: Dict[int, List[int]],
-        database: Database,
-        message_filter: MesssageFilter = EmptyMessageFilter(),
-        logger: Union[str, logging.Logger] = None
+            self: 'MirrorTelegramClient',
+            source_chats: List[int],
+            mirror_mapping: Dict[int, List[int]],
+            database: Database,
+            message_filter: MesssageFilter = EmptyMessageFilter(),
+            logger: Union[str, logging.Logger] = None
     ) -> None:
         """Configure channels mirroring
 
