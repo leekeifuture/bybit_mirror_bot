@@ -6,12 +6,39 @@ from telethon.sessions import StringSession
 from telethon.sync import TelegramClient
 from telethon.tl import types
 
+from config import DISCORD_GUILD_ID, DISCORD_BOT_TOKEN, DISCORD_CHANNEL_ID
 from .messagefilters import EmptyMessageFilter, MesssageFilter
 from .storage import Database, MirrorMessage
+import discord
+
+
+async def send_to_discord_chat(text):
+    intents = discord.Intents.all()
+    client = NonInteractiveClient(intents=intents, text=text)
+    client.run(DISCORD_BOT_TOKEN)
+
+
+async def send_message_to_discord_chat(client, text):
+    guild = client.get_guild(DISCORD_GUILD_ID)
+    channel = guild.get_channel(DISCORD_CHANNEL_ID)
+    await channel.send(text)
+
+
+class NonInteractiveClient(discord.Client):
+    def __init__(self, *, intents=None, text=None):
+        super().__init__(intents=intents)
+        self.text = text
+
+    async def on_ready(self):
+        await self.wait_until_ready()
+        await send_message_to_discord_chat(self, self.text)
+        await self.close()
+
+    async def on_error(self, event, *args, **kwargs):
+        raise
 
 
 class EventHandlers:
-
     async def on_new_message(self: 'MirrorTelegramClient', event) -> None:
         """NewMessage event handler"""
 
@@ -34,9 +61,11 @@ class EventHandlers:
             incoming_message = self._message_filter.process(incoming_message)
             for outgoing_chat in outgoing_chats:
                 if isinstance(incoming_message.media, types.MessageMediaPoll):
+                    await send_to_discord_chat(event.message.message)
                     outgoing_message = await self.send_message(outgoing_chat,
                                                                file=types.InputMediaPoll(poll=incoming_message.media.poll))
                 else:
+                    await send_to_discord_chat(event.message.message)
                     outgoing_message = await self.send_message(outgoing_chat, event.message)
 
                 if outgoing_message is not None:

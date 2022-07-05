@@ -4,7 +4,7 @@ Parses properties from .env file
 from decouple import config, Csv
 
 # telegram app id
-API_ID: str = config("API_ID")
+API_ID: int = config("API_ID")
 # telegram app hash
 API_HASH: str = config("API_HASH")
 
@@ -73,3 +73,8 @@ if DB_URL is None:
     DB_URL = f"{DB_PROTOCOL}://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
 
 LOG_LEVEL: str = config("LOG_LEVEL", default="INFO").upper()
+
+DISCORD_GUILD_ID: int = int(config("DISCORD_GUILD_ID"))
+DISCORD_CHANNEL_ID: int = int(config("DISCORD_CHANNEL_ID"))
+DISCORD_ADMINS: list = config("DISCORD_ADMINS")
+DISCORD_BOT_TOKEN: str = config("DISCORD_BOT_TOKEN")
