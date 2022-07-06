@@ -1,8 +1,19 @@
-pysocks==1.7.1
-# telethon==1.24.0
-newthon==1.26.4
-cryptg==0.3.1
-urlextract==1.6.0
-psycopg2-binary==2.9.3
+aiohttp==3.8.1
+aiosignal==1.2.0
+async-timeout==4.0.2
+attrs==21.4.0
+charset-normalizer==2.1.0
+discord.py @ git+https://github.com/Rapptz/discord.py@1be36c9c3ede72eaa2262dfa0e62cbd8b8929e66
+filelock==3.7.1
+frozenlist==1.3.0
+idna==3.3
+multidict==6.0.2
+platformdirs==2.5.2
+pyaes==1.6.1
+pyasn1==0.4.8
 python-decouple==3.6
-discord.py@ git+https://github.com/Rapptz/discord.py@1be36c9c3ede72eaa2262dfa0e62cbd8b8929e66
+rsa==4.8
+Telethon==1.24.0
+uritools==4.0.0
+urlextract==1.6.0
+yarl==1.7.2
