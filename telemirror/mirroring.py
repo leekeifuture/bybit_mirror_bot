@@ -17,7 +17,7 @@ async def send_to_discord_chat(message, logger):
     intents = discord.Intents.all()
     client = NonInteractiveClient(intents=intents, message=message,
                                   logger=logger)
-    client.run(DISCORD_BOT_TOKEN)
+    await client.start(DISCORD_BOT_TOKEN)
 
 
 async def send_message_to_discord_chat(client, message, logger):
