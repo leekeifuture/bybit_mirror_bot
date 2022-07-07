@@ -27,10 +27,14 @@ async def send_message_to_discord_chat(client, message, logger):
     if message.media:
         downloads_dir = './downloads'
         file_name = 'file'
-        if hasattr(message.media, 'document') and \
-                message.media.document and \
-                message.media.document.attributes[1].file_name:
-            file_name = message.media.document.attributes[1].file_name
+
+        try:
+            if hasattr(message.media, 'document') and \
+                    message.media.document and \
+                    message.media.document.attributes[1].file_name:
+                file_name = message.media.document.attributes[1].file_name
+        except Exception as e:
+            logger.error(e)
 
         logger.info('Downloading file...')
 
