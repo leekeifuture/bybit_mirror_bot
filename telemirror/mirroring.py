@@ -41,11 +41,7 @@ async def send_message_to_discord_chat(client, message, logger):
 
         logger.info('Downloading file...')
 
-        i = int(math.floor(math.log(message.file.size, 1024)))
-        p = math.pow(1024, i)
-        file_sile = round(message.file.size / p, 2)
-
-        if file_sile >= 8:
+        if message.file.size >= 8388608:
             logger.info(
                 'Sending message without file because of more than 8MB...'
             )
