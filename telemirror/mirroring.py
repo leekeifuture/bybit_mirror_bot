@@ -1,3 +1,4 @@
+import os
 import logging
 import math
 import shutil
@@ -25,8 +26,10 @@ async def send_message_to_discord_chat(client, message, logger):
     channel = guild.get_channel(DISCORD_CHANNEL_ID)
 
     if message.media:
-        downloads_dir = './downloads'
         file_name = 'file'
+        downloads_dir = './downloads'
+        if not os.path.exists(downloads_dir):
+            os.makedirs(downloads_dir)
 
         try:
             if hasattr(message.media, 'document') and \
